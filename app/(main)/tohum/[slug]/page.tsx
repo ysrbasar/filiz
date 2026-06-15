@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
@@ -7,7 +8,7 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
-async function getSeed(slug: string) {
+const getSeed = cache(async (slug: string) => {
   return prisma.seed.findUnique({
     where: { slug, publishedAt: { not: null } },
     include: {
@@ -21,7 +22,7 @@ async function getSeed(slug: string) {
       },
     },
   })
-}
+})
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params

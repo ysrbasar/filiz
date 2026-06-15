@@ -150,4 +150,11 @@
     min-height: 44px;
     min-width: 44px;
   }
+
+  /* Form input */
+  .input {
+    @apply w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-text-primary
+           placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary-400
+           focus:border-primary-400 transition-all;
+  }
 }

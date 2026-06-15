@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Plus_Jakarta_Sans, Geist_Mono } from 'next/font/google'
+import { ServiceWorkerRegistrar } from '@/components/layout/ServiceWorkerRegistrar'
 import './globals.css'
 
 const inter = Inter({
@@ -66,9 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
-        <script dangerouslySetInnerHTML={{
-          __html: `if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}) }) }`
-        }} />
+        <ServiceWorkerRegistrar />
       </body>
     </html>
   )
