@@ -1,0 +1,476 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── KULLANICI ─────────────────────────────────────────────────────────────
+model User {
+  id            String        @id @default(cuid())
+  name          String?
+  email         String        @unique
+  emailVerified DateTime?
+  password      String?
+  role          Role          @default(USER)
+  avatar        String?
+  city          String?
+  region        String?
+  xp            Int           @default(0)
+  notifications Boolean       @default(true)
+  pushToken     String?
+  accounts      Account[]
+  sessions      Session[]
+  garden        PlantedSeed[]
+  orders        Order[]
+  projects      Project[]
+  badges        UserBadge[]
+  comments      Comment[]
+  activityLogs  ActivityLog[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── TOHUM ─────────────────────────────────────────────────────────────────
+model Seed {
+  id              String           @id @default(cuid())
+  slug            String           @unique
+  name            String
+  scientificName  String?
+  description     String           @db.Text
+  longDescription String?          @db.Text
+  price           Float
+  stock           Int              @default(0)
+  images          String[]
+  category        SeedCategory
+  difficulty      Difficulty       @default(BEGINNER)
+  climateZone     String[]
+  soilType        String?
+  waterNeeds      WaterNeeds       @default(MEDIUM)
+  sunlight        SunlightNeeds    @default(FULL_SUN)
+  qrCode          String?
+  qrCodeUrl       String?
+  seoTitle        String?
+  seoDescription  String?
+  stages          GrowthStage[]
+  monthlyTasks    MonthlyTask[]
+  regionCalendars RegionCalendar[]
+  diseases        SeedDisease[]
+  relatedProducts SeedProduct[]
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  plantedBy       PlantedSeed[]
+  faqs            SeedFAQ[]
+  featured        Boolean          @default(false)
+  publishedAt     DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model GrowthStage {
+  id            String         @id @default(cuid())
+  seedId        String
+  seed          Seed           @relation(fields: [seedId], references: [id], onDelete: Cascade)
+  order         Int
+  title         String
+  slug          String
+  description   String         @db.Text
+  durationDays  Int
+  tips          String[]
+  warnings      String[]
+  tasks         String[]
+  animationType StageAnimation
+  imageUrl      String?
+  lottieUrl     String?
+  model3dUrl    String?
+}
+
+model MonthlyTask {
+  id         String   @id @default(cuid())
+  seedId     String
+  seed       Seed     @relation(fields: [seedId], references: [id], onDelete: Cascade)
+  month      Int
+  task       String
+  type       TaskType
+  priority   Priority @default(MEDIUM)
+  isOptional Boolean  @default(false)
+}
+
+model RegionCalendar {
+  id             String  @id @default(cuid())
+  seedId         String
+  seed           Seed    @relation(fields: [seedId], references: [id], onDelete: Cascade)
+  city           String
+  climateGroup   String
+  plantingMonths Int[]
+  harvestMonths  Int[]
+  notes          String?
+}
+
+model SeedDisease {
+  id         String   @id @default(cuid())
+  seedId     String
+  seed       Seed     @relation(fields: [seedId], references: [id], onDelete: Cascade)
+  name       String
+  symptoms   String[]
+  causes     String[]
+  solutions  String[]
+  productIds String[]
+}
+
+model SeedFAQ {
+  id       String @id @default(cuid())
+  seedId   String
+  seed     Seed   @relation(fields: [seedId], references: [id], onDelete: Cascade)
+  question String
+  answer   String @db.Text
+  order    Int    @default(0)
+}
+
+// ─── ÜRÜN ──────────────────────────────────────────────────────────────────
+model Product {
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  name           String
+  description    String          @db.Text
+  price          Float
+  comparePrice   Float?
+  stock          Int             @default(0)
+  images         String[]
+  category       ProductCategory
+  brand          String?
+  specs          Json?
+  seoTitle       String?
+  seoDescription String?
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+  relatedSeeds   SeedProduct[]
+  featured       Boolean         @default(false)
+  publishedAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model SeedProduct {
+  seedId       String
+  seed         Seed    @relation(fields: [seedId], references: [id])
+  productId    String
+  product      Product @relation(fields: [productId], references: [id])
+  relationType String
+
+  @@id([seedId, productId])
+}
+
+// ─── BAHÇE ─────────────────────────────────────────────────────────────────
+model PlantedSeed {
+  id                String               @id @default(cuid())
+  userId            String
+  user              User                 @relation(fields: [userId], references: [id])
+  seedId            String
+  seed              Seed                 @relation(fields: [seedId], references: [id])
+  plantedDate       DateTime
+  location          String?
+  city              String?
+  currentStageOrder Int                  @default(0)
+  notes             String?
+  photos            String[]
+  isActive          Boolean              @default(true)
+  logs              GardenLog[]
+  notifications     GardenNotification[]
+  harvestedAt       DateTime?
+  harvestAmount     Float?
+  harvestUnit       String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+}
+
+model GardenLog {
+  id            String      @id @default(cuid())
+  plantedSeedId String
+  plantedSeed   PlantedSeed @relation(fields: [plantedSeedId], references: [id], onDelete: Cascade)
+  date          DateTime    @default(now())
+  type          TaskType
+  note          String?
+  photo         String?
+  weather       String?
+}
+
+model GardenNotification {
+  id            String      @id @default(cuid())
+  plantedSeedId String
+  plantedSeed   PlantedSeed @relation(fields: [plantedSeedId], references: [id], onDelete: Cascade)
+  scheduledFor  DateTime
+  title         String
+  body          String
+  type          TaskType
+  sent          Boolean     @default(false)
+  sentAt        DateTime?
+}
+
+// ─── SİPARİŞ ───────────────────────────────────────────────────────────────
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+  subtotal        Float
+  shipping        Float       @default(0)
+  total           Float
+  status          OrderStatus @default(PENDING)
+  paymentMethod   String?
+  paymentId       String?
+  shippingAddress Json?
+  invoiceAddress  Json?
+  trackingNumber  String?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  seedId      String?
+  seed        Seed?    @relation(fields: [seedId], references: [id])
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id])
+  quantity    Int
+  price       Float
+  qrGenerated Boolean  @default(false)
+  qrCode      String?
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  sessionId String
+  seedId    String?
+  seed      Seed?    @relation(fields: [seedId], references: [id])
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+// ─── TOPLULUK ──────────────────────────────────────────────────────────────
+model Project {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  title       String
+  description String    @db.Text
+  images      String[]
+  tags        String[]
+  seedIds     String[]
+  likes       Int       @default(0)
+  viewCount   Int       @default(0)
+  comments    Comment[]
+  published   Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  projectId String?
+  project   Project?  @relation(fields: [projectId], references: [id])
+  content   String    @db.Text
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   Comment[] @relation("CommentReplies")
+  createdAt DateTime  @default(now())
+}
+
+// ─── İÇERİK ────────────────────────────────────────────────────────────────
+model Article {
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  title          String
+  content        String          @db.Text
+  excerpt        String?
+  coverImage     String?
+  category       ArticleCategory
+  tags           String[]
+  authorId       String
+  seoTitle       String?
+  seoDescription String?
+  readingTime    Int?
+  viewCount      Int             @default(0)
+  published      Boolean         @default(false)
+  publishedAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+// ─── OYUNLAŞTIRMA ──────────────────────────────────────────────────────────
+model Badge {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  description String
+  icon        String
+  xpReward    Int         @default(0)
+  condition   Json
+  users       UserBadge[]
+}
+
+model UserBadge {
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  badgeId  String
+  badge    Badge    @relation(fields: [badgeId], references: [id])
+  earnedAt DateTime @default(now())
+
+  @@id([userId, badgeId])
+}
+
+model ActivityLog {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  type      ActivityType
+  xpEarned  Int          @default(0)
+  metadata  Json?
+  createdAt DateTime     @default(now())
+}
+
+// ─── ENUM'LAR ──────────────────────────────────────────────────────────────
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum SeedCategory {
+  VEGETABLE
+  FRUIT
+  HERB
+  FLOWER
+  GRAIN
+}
+
+enum ProductCategory {
+  HOBBY_SET
+  TOOL
+  FERTILIZER
+  PESTICIDE
+  SOIL
+  CONTAINER
+  IRRIGATION
+  OTHER
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum WaterNeeds {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum SunlightNeeds {
+  FULL_SUN
+  PARTIAL_SHADE
+  FULL_SHADE
+}
+
+enum TaskType {
+  PLANTING
+  WATERING
+  FERTILIZING
+  HARVESTING
+  PRUNING
+  TREATING
+  CHECKING
+  REPOTTING
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum StageAnimation {
+  SEED
+  SPROUT
+  SEEDLING
+  YOUNG_PLANT
+  FLOWERING
+  FRUITING
+  HARVEST
+}
+
+enum ArticleCategory {
+  VEGETABLE
+  FRUIT
+  ORGANIC
+  FERTILIZING
+  IRRIGATION
+  COMPOST
+  GREENHOUSE
+  BEGINNER
+}
+
+enum ActivityType {
+  PURCHASE
+  PLANT
+  HARVEST
+  LOG_ENTRY
+  BADGE_EARN
+  COMMENT
+  PROJECT_SHARE
+}
