@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 
 const SETS = [
@@ -48,32 +47,25 @@ export function HobbySetsBanner() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {SETS.map((set, i) => (
-            <motion.div
+          {SETS.map((set) => (
+            <Link
               key={set.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              href={set.href}
+              className={`group block bg-gradient-to-br ${set.bg} rounded-3xl p-7 border border-primary-100 hover:shadow-filiz-hover transition-all hover:-translate-y-1`}
             >
-              <Link
-                href={set.href}
-                className={`group block bg-gradient-to-br ${set.bg} rounded-3xl p-7 border border-primary-100 hover:shadow-filiz-hover transition-all hover:-translate-y-1`}
-              >
-                <div className="text-5xl mb-5">{set.emoji}</div>
-                <h3 className="font-display text-xl font-bold text-text-primary mb-2">{set.title}</h3>
-                <p className="text-sm text-text-secondary leading-relaxed mb-5">{set.description}</p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-xl font-bold text-primary-600">{set.price}</span>
-                    <span className="text-sm text-text-secondary line-through ml-2">{set.originalPrice}</span>
-                  </div>
-                  <span className="flex items-center gap-1 text-sm font-medium text-primary-600 group-hover:gap-2 transition-all">
-                    İncele <ArrowRight className="w-4 h-4" />
-                  </span>
+              <div className="text-5xl mb-5">{set.emoji}</div>
+              <h3 className="font-display text-xl font-bold text-text-primary mb-2">{set.title}</h3>
+              <p className="text-sm text-text-secondary leading-relaxed mb-5">{set.description}</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xl font-bold text-primary-600">{set.price}</span>
+                  <span className="text-sm text-text-secondary line-through ml-2">{set.originalPrice}</span>
                 </div>
-              </Link>
-            </motion.div>
+                <span className="flex items-center gap-1 text-sm font-medium text-primary-600 group-hover:gap-2 transition-all">
+                  İncele <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { ShoppingBag, QrCode, Sprout, ArrowRight } from 'lucide-react'
 
 const STEPS = [
@@ -45,18 +44,10 @@ export function HowItWorks() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 relative">
-          {/* Bağlantı çizgisi */}
           <div aria-hidden="true" className="hidden md:block absolute top-16 left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-0.5 bg-gradient-to-r from-primary-200 via-earth-200 to-accent-gold/40" />
 
           {STEPS.map(({ icon: Icon, title, description, color, number }, i) => (
-            <motion.div
-              key={title}
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
-              className="flex flex-col items-center text-center"
-            >
+            <div key={title} className="flex flex-col items-center text-center">
               <div className={`relative w-16 h-16 rounded-2xl ${color} flex items-center justify-center mb-5 shadow-filiz`}>
                 <Icon className="w-7 h-7" />
                 <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center">
@@ -68,7 +59,7 @@ export function HowItWorks() {
               {i < STEPS.length - 1 && (
                 <ArrowRight className="md:hidden mt-6 w-5 h-5 text-primary-300 rotate-90" />
               )}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

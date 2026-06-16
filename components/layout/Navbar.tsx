@@ -9,12 +9,15 @@ import { useLocationStore } from '@/store/locationStore'
 import { ALL_CITIES } from '@/lib/utils/region'
 import { cn } from '@/lib/utils/cn'
 import { buttonVariants } from '@/components/ui/button'
+import { WeatherWidget } from '@/components/layout/WeatherWidget'
 
 const NAV_LINKS = [
   { href: '/magaza', label: 'Mağaza' },
   { href: '/tohum', label: 'Tohumlar' },
   { href: '/bahcem', label: 'Bahçem' },
   { href: '/akademi', label: 'Akademi' },
+  { href: '/ai-analiz', label: '🤖 AI Analiz' },
+  { href: '/qr-tara', label: '📷 QR Tara' },
   { href: '/projeler', label: 'Topluluk' },
 ]
 
@@ -26,7 +29,7 @@ function CityPicker() {
   const [search, setSearch] = useState('')
   const ref = useRef<HTMLDivElement>(null)
 
-  const filtered = ALL_CITIES.filter((c) => c.toLowerCase().includes(search.toLowerCase())).slice(0, 30)
+  const filtered = ALL_CITIES.filter((c) => c.toLowerCase().includes(search.toLowerCase()))
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -40,12 +43,7 @@ function CityPicker() {
     <div ref={ref} className="relative hidden sm:block">
       <button
         onClick={() => setOpen(!open)}
-        className={cn(
-          'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border',
-          city
-            ? 'bg-primary-100 text-primary-700 border-primary-300'
-            : 'bg-white text-text-secondary border-gray-200 hover:border-primary-300 hover:text-primary-600'
-        )}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border bg-white/20 hover:bg-white/30 text-white border-white/30"
       >
         <MapPin className="w-3.5 h-3.5" />
         <span>{city ?? 'Şehir Seç'}</span>
@@ -108,14 +106,20 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-primary-100 shadow-filiz">
-      {/* Lokasyon bandı — sadece şehir seçilmemişse göster */}
-      {!displayCity && (
-        <div className="bg-primary-600 text-white text-xs py-1.5 px-4 flex items-center justify-center gap-2">
-          <MapPin className="w-3 h-3" />
-          <span>Bölgenize özel ekim takvimi için şehrinizi seçin</span>
+      {/* Üst bant */}
+      <div className="bg-primary-600 text-white text-xs py-1.5 px-4 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-3 h-3 shrink-0" />
+          {displayCity
+            ? <span className="text-primary-100">Bölgenize özel ekim takvimi</span>
+            : <span>Bölgenize özel ekim takvimi için şehrinizi seçin</span>
+          }
+        </div>
+        <div className="flex items-center gap-2">
+          {mounted && displayCity && <WeatherWidget city={displayCity} />}
           <CityPicker />
         </div>
-      )}
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
@@ -146,9 +150,6 @@ export function Navbar() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-1.5">
-            {/* Şehir seçili ise compact göster */}
-            {displayCity && <CityPicker />}
-
             <button
               aria-label="Ara"
               className="p-2 rounded-lg text-text-secondary hover:text-primary-600 hover:bg-primary-50 transition-colors touch-target hidden sm:flex items-center justify-center"

@@ -151,6 +151,18 @@
     min-width: 44px;
   }
 
+  /* Hero fade-in animations */
+  @keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .animate-fade-in-left  { animation: fadeInLeft  0.5s ease forwards; }
+  .animate-fade-in-right { animation: fadeInRight 0.5s ease forwards; }
+
   /* Form input */
   .input {
     @apply w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-text-primary

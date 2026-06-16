@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { ShoppingCart, Star, Droplets, Sun, Sprout, MapPin, ChevronDown, ChevronUp } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { Button } from '@/components/ui/button'
@@ -60,7 +59,7 @@ export function SeedDetailClient({ seed }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
           {/* Görseller */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+          <div className="animate-fade-in-left">
             <div className="relative aspect-square rounded-3xl overflow-hidden bg-primary-50 mb-4 shadow-filiz">
               {seed.images[activeImage] ? (
                 <Image
@@ -93,10 +92,10 @@ export function SeedDetailClient({ seed }: Props) {
                 ))}
               </div>
             )}
-          </motion.div>
+          </div>
 
           {/* Bilgiler */}
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+          <div className="animate-fade-in-right">
             <div className="flex items-center gap-2 mb-3">
               <span className={cn('text-xs font-semibold px-3 py-1 rounded-full', diff.color)}>
                 {diff.label}
@@ -165,7 +164,7 @@ export function SeedDetailClient({ seed }: Props) {
                 Sepete Ekle
               </Button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

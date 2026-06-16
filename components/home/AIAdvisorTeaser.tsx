@@ -3,7 +3,6 @@
 import { useState, useRef } from 'react'
 import { Brain, ArrowRight, Leaf, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { motion, AnimatePresence } from 'framer-motion'
 
 const QUICK_QUESTIONS = [
   'Domatesi ne zaman ekmeliyim?',
@@ -44,12 +43,7 @@ export function AIAdvisorTeaser() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-gradient-to-br from-primary-50 to-earth-100 rounded-3xl p-8 md:p-12 border border-primary-100 text-center"
-        >
+        <div className="bg-gradient-to-br from-primary-50 to-earth-100 rounded-3xl p-8 md:p-12 border border-primary-100 text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary-500 flex items-center justify-center mx-auto mb-6 shadow-filiz">
             <Brain className="w-8 h-8 text-white" />
           </div>
@@ -61,7 +55,6 @@ export function AIAdvisorTeaser() {
             GPT-4 destekli, Türkçe.
           </p>
 
-          {/* Hızlı sorular */}
           <div className="flex flex-wrap gap-2 justify-center mb-6">
             {QUICK_QUESTIONS.map((q) => (
               <button
@@ -74,7 +67,6 @@ export function AIAdvisorTeaser() {
             ))}
           </div>
 
-          {/* Input */}
           <div className="flex gap-3 max-w-xl mx-auto">
             <input
               ref={inputRef}
@@ -94,30 +86,22 @@ export function AIAdvisorTeaser() {
             </Button>
           </div>
 
-          {/* Yanıt */}
-          <AnimatePresence>
-            {reply && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="mt-6 max-w-xl mx-auto bg-white rounded-2xl p-5 text-left border border-primary-100 shadow-sm"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center shrink-0">
-                    <Brain className="w-4 h-4 text-white" />
-                  </div>
-                  <p className="text-sm text-text-primary leading-relaxed">{reply}</p>
+          {reply && (
+            <div className="mt-6 max-w-xl mx-auto bg-white rounded-2xl p-5 text-left border border-primary-100 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center shrink-0">
+                  <Brain className="w-4 h-4 text-white" />
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <p className="text-sm text-text-primary leading-relaxed">{reply}</p>
+              </div>
+            </div>
+          )}
 
           <p className="text-xs text-text-secondary mt-4 flex items-center justify-center gap-1">
             <Leaf className="w-3 h-3 text-primary-400" />
             Üyelere saatte 10 ücretsiz analiz
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

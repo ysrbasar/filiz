@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { ArrowRight, Leaf, QrCode, Brain } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
@@ -22,44 +21,24 @@ export function HeroSection() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid lg:grid-cols-2 gap-16 items-center">
         <div className="text-center lg:text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 bg-primary-100 text-primary-600 text-sm font-semibold px-4 py-2 rounded-full mb-6"
-          >
+          <div className="inline-flex items-center gap-2 bg-primary-100 text-primary-600 text-sm font-semibold px-4 py-2 rounded-full mb-6">
             <Leaf className="w-4 h-4" />
             Türkiye&apos;nin Dijital Tarım Platformu
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary leading-tight mb-6"
-          >
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary leading-tight mb-6">
             Tohumdan Hasada{' '}
             <span className="text-primary-500">Dijital Tarım</span>{' '}
             Rehberi
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-text-secondary leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
-          >
+          <p className="text-lg text-text-secondary leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
             Tohum al, QR kodunu oku, yapay zeka destekli kişiselleştirilmiş rehberinle büyüt.
             Bölgesel iklim takvimleri, interaktif büyüme çizelgesi ve anlık bitki danışmanı
             bir arada.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
-          >
+          <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
             <Link
               href="/magaza"
               className={cn(
@@ -80,29 +59,19 @@ export function HeroSection() {
               <Leaf className="w-5 h-5" />
               Bahçeni Oluştur
             </Link>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex items-center gap-4 mt-8 justify-center lg:justify-start"
-          >
+          <div className="flex items-center gap-4 mt-8 justify-center lg:justify-start">
             {BADGES.map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-1.5 text-sm text-text-secondary">
                 <Icon className="w-4 h-4 text-primary-400" />
                 <span>{label}</span>
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="relative hidden lg:block"
-        >
+        <div className="relative hidden lg:block">
           <div className="grid grid-cols-2 gap-4">
             {[
               { src: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400', alt: 'Cherry domates', tall: true, mt: '' },
@@ -125,7 +94,7 @@ export function HeroSection() {
               <p className="font-bold text-text-primary">12.400+ kullanıcı</p>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
