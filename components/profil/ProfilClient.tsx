@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   User, ShoppingBag, Award, Activity, Settings,
   MapPin, Calendar, Sprout, Star, Package, Truck,
@@ -101,11 +100,9 @@ export function ProfilClient({ user, orders, badges, activity }: Props) {
                   <span>Seviye {level + 1} için {nextLevelXp - user.xp} XP</span>
                 </div>
                 <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className="h-full bg-accent-gold rounded-full"
+                  <div
+                    style={{ width: `${progress}%` }}
+                    className="h-full bg-accent-gold rounded-full transition-all duration-700"
                   />
                 </div>
               </div>
@@ -159,20 +156,12 @@ export function ProfilClient({ user, orders, badges, activity }: Props) {
 
       {/* Tab içeriği */}
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18 }}
-          >
-            {tab === 'overview' && <OverviewTab user={user} badges={badges} activity={activity.slice(0, 5)} />}
-            {tab === 'orders'   && <OrdersTab orders={orders} />}
-            {tab === 'badges'   && <BadgesTab badges={badges} />}
-            {tab === 'activity' && <ActivityTab activity={activity} />}
-          </motion.div>
-        </AnimatePresence>
+        <div key={tab}>
+          {tab === 'overview' && <OverviewTab user={user} badges={badges} activity={activity.slice(0, 5)} />}
+          {tab === 'orders'   && <OrdersTab orders={orders} />}
+          {tab === 'badges'   && <BadgesTab badges={badges} />}
+          {tab === 'activity' && <ActivityTab activity={activity} />}
+        </div>
       </div>
     </div>
   )
@@ -323,10 +312,8 @@ function BadgesTab({ badges }: { badges: any[] }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
       {badges.map(({ badge, earnedAt }: any) => (
-        <motion.div
+        <div
           key={badge.id}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
           className="bg-white border border-gray-100 rounded-2xl p-5 text-center shadow-sm"
         >
           <span className="text-4xl block mb-3">{badge.icon}</span>
@@ -340,7 +327,7 @@ function BadgesTab({ badges }: { badges: any[] }) {
           <p className="text-[10px] text-text-secondary mt-2">
             {new Date(earnedAt).toLocaleDateString('tr-TR')}
           </p>
-        </motion.div>
+        </div>
       ))}
     </div>
   )

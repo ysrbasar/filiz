@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { Sprout, Plus, Bell, Calendar, BookOpen, Star, ChevronRight, Droplets } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
@@ -87,11 +86,9 @@ export function GardenDashboard({ user, plantedSeeds, notifications }: Props) {
               <span className="text-xs text-primary-300">{user.xp} XP</span>
             </div>
             <div className="h-2 bg-primary-600 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-300 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
+              <div
+                className="h-full bg-gradient-to-r from-amber-400 to-amber-300 rounded-full transition-all duration-700"
+                style={{ width: `${progress}%` }}
               />
             </div>
             <p className="text-xs text-primary-300 mt-1">Sonraki seviyeye {100 - progress} XP</p>
@@ -145,11 +142,8 @@ export function GardenDashboard({ user, plantedSeeds, notifications }: Props) {
                   const progressPct = Math.min(100, Math.round((daysElapsed / totalDays) * 100))
 
                   return (
-                    <motion.div
+                    <div
                       key={plant.id}
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.08 }}
                       className="bg-white rounded-2xl border border-primary-100 shadow-filiz overflow-hidden"
                     >
                       <div className="flex items-center gap-4 p-4 border-b border-primary-50">
@@ -188,7 +182,7 @@ export function GardenDashboard({ user, plantedSeeds, notifications }: Props) {
                         </div>
                         <p className="text-xs text-text-secondary mt-1 text-right">%{progressPct} tamamlandı</p>
                       </div>
-                    </motion.div>
+                    </div>
                   )
                 })}
 

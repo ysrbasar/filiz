@@ -590,6 +590,221 @@ async function main() {
     ],
   })
 
+  // ─── DEMO BAHÇE (demoUser) ───────────────────────────────────────────
+  const planted1 = await prisma.plantedSeed.create({
+    data: {
+      userId: demoUser.id,
+      seedId: domates.id,
+      plantedDate: new Date('2026-04-10'),
+      location: 'Balkon — Güney Cephe',
+      city: 'İstanbul',
+      currentStageOrder: 5,
+      notes: 'Bu yıl ilk cherry domates deneyimim. Çok hızlı büyüdü!',
+      photos: ['https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400'],
+      isActive: true,
+    },
+  })
+
+  const planted2 = await prisma.plantedSeed.create({
+    data: {
+      userId: demoUser.id,
+      seedId: fesleğen.id,
+      plantedDate: new Date('2026-05-01'),
+      location: 'Mutfak Penceresi',
+      city: 'İstanbul',
+      currentStageOrder: 3,
+      notes: 'Pesto için yetiştiriyorum, kokusu harika.',
+      photos: ['https://images.unsplash.com/photo-1618375569909-3c8616cf7733?w=400'],
+      isActive: true,
+    },
+  })
+
+  const planted3 = await prisma.plantedSeed.create({
+    data: {
+      userId: demoUser.id,
+      seedId: salatalik.id,
+      plantedDate: new Date('2026-05-15'),
+      location: 'Balkon — Doğu Cephe',
+      city: 'İstanbul',
+      currentStageOrder: 2,
+      notes: 'Kafes kurdum, büyümeye başladı.',
+      isActive: true,
+    },
+  })
+
+  // Admin bahçesi
+  const planted4 = await prisma.plantedSeed.create({
+    data: {
+      userId: admin.id,
+      seedId: lavanta.id,
+      plantedDate: new Date('2026-03-01'),
+      location: 'Bahçe — Güneş Alan Köşe',
+      city: 'İzmir',
+      currentStageOrder: 4,
+      notes: 'Geçen yıldan gelen lavanta. Bu yıl çok güzel açtı.',
+      photos: ['https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400'],
+      isActive: true,
+    },
+  })
+
+  const planted5 = await prisma.plantedSeed.create({
+    data: {
+      userId: admin.id,
+      seedId: biber.id,
+      plantedDate: new Date('2026-02-15'),
+      location: 'Bahçe — Sera',
+      city: 'İzmir',
+      currentStageOrder: 4,
+      notes: 'Sera içinde çok iyi gelişiyor. Kırmızı olmayı bekliyorum.',
+      isActive: true,
+      harvestedAt: new Date('2026-06-01'),
+      harvestAmount: 2.5,
+      harvestUnit: 'kg',
+    },
+  })
+
+  // ─── BAHÇE GÜNLÜK LOGLARI ───────────────────────────────────────────
+  await prisma.gardenLog.createMany({
+    data: [
+      // planted1 (domates) logları
+      { plantedSeedId: planted1.id, date: new Date('2026-04-10'), type: TaskType.PLANTING, note: 'Tohumları ekdim, fide tepsisine koydum.' },
+      { plantedSeedId: planted1.id, date: new Date('2026-04-18'), type: TaskType.CHECKING, note: 'İlk filizler çıktı! Çok heyecan verici.' },
+      { plantedSeedId: planted1.id, date: new Date('2026-05-02'), type: TaskType.PLANTING, note: 'Büyük saksıya şaşırttım.', photo: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400' },
+      { plantedSeedId: planted1.id, date: new Date('2026-05-10'), type: TaskType.FERTILIZING, note: 'İlk gübre — dengeli NPK.' },
+      { plantedSeedId: planted1.id, date: new Date('2026-05-20'), type: TaskType.PRUNING, note: 'Koltuk sürgünlerini kestim.' },
+      { plantedSeedId: planted1.id, date: new Date('2026-06-01'), type: TaskType.WATERING, note: 'Çiçekler açmaya başladı, sulamayı düzenledim.' },
+      { plantedSeedId: planted1.id, date: new Date('2026-06-10'), type: TaskType.CHECKING, note: 'Küçük domatesler oluştu! 🍅', photo: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400' },
+      // planted2 (fesleğen) logları
+      { plantedSeedId: planted2.id, date: new Date('2026-05-01'), type: TaskType.PLANTING, note: 'Mutfak penceresine ektim.' },
+      { plantedSeedId: planted2.id, date: new Date('2026-05-12'), type: TaskType.CHECKING, note: 'Güzel filizlendi, 8 filiz var.' },
+      { plantedSeedId: planted2.id, date: new Date('2026-05-25'), type: TaskType.PRUNING, note: 'İlk tepe budaması yaptım, dallanmaya başladı.' },
+      { plantedSeedId: planted2.id, date: new Date('2026-06-05'), type: TaskType.HARVESTING, note: 'İlk hasat! Pesto yaptım, muhteşemdi.' },
+      // planted3 (salatalık) logları
+      { plantedSeedId: planted3.id, date: new Date('2026-05-15'), type: TaskType.PLANTING, note: 'Balkona ektim, kafes kurdum.' },
+      { plantedSeedId: planted3.id, date: new Date('2026-05-22'), type: TaskType.CHECKING, note: 'Çimlenme başladı.' },
+      // planted4 (lavanta - admin) logları
+      { plantedSeedId: planted4.id, date: new Date('2026-03-01'), type: TaskType.PLANTING, note: 'Geçen yıldan kalan bitkiyi budadım.' },
+      { plantedSeedId: planted4.id, date: new Date('2026-05-15'), type: TaskType.CHECKING, note: 'Tomurcuklar belirdi.', photo: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400' },
+      { plantedSeedId: planted4.id, date: new Date('2026-06-10'), type: TaskType.HARVESTING, note: 'İlk çiçekler açtı, bir demet kestim.' },
+      // planted5 (biber - admin) logları
+      { plantedSeedId: planted5.id, date: new Date('2026-02-15'), type: TaskType.PLANTING, note: 'Serada fide ekimi.' },
+      { plantedSeedId: planted5.id, date: new Date('2026-04-01'), type: TaskType.PLANTING, note: 'Sera içindeki büyük saksıya şaşırttım.' },
+      { plantedSeedId: planted5.id, date: new Date('2026-06-01'), type: TaskType.HARVESTING, note: '2.5kg hasat! Kırmızı biberler çok tatlı çıktı.', photo: 'https://images.unsplash.com/photo-1525585459854-99e1e9e38b6a?w=400' },
+    ],
+  })
+
+  // ─── SİPARİŞLER ─────────────────────────────────────────────────────
+  const order1 = await prisma.order.create({
+    data: {
+      userId: demoUser.id,
+      subtotal: 64.70,
+      shipping: 0,
+      total: 64.70,
+      status: 'DELIVERED',
+      paymentMethod: 'credit_card',
+      trackingNumber: 'YK123456789TR',
+      shippingAddress: { name: 'Ayşe Bahçıvan', address: 'Kadıköy Mah. Bağdat Cad. No:42', city: 'İstanbul', zip: '34710' },
+      createdAt: new Date('2026-04-05'),
+      items: {
+        create: [
+          { seedId: domates.id, quantity: 2, price: 24.90 },
+          { seedId: fesleğen.id, quantity: 1, price: 14.90 },
+        ],
+      },
+    },
+  })
+
+  const order2 = await prisma.order.create({
+    data: {
+      userId: demoUser.id,
+      subtotal: 109.80,
+      shipping: 29.90,
+      total: 139.70,
+      status: 'SHIPPED',
+      paymentMethod: 'credit_card',
+      trackingNumber: 'YK987654321TR',
+      shippingAddress: { name: 'Ayşe Bahçıvan', address: 'Kadıköy Mah. Bağdat Cad. No:42', city: 'İstanbul', zip: '34710' },
+      createdAt: new Date('2026-06-10'),
+      items: {
+        create: [
+          { productId: topraksizToprak.id, quantity: 1, price: 89.90 },
+          { seedId: salatalik.id, quantity: 1, price: 19.90 },
+        ],
+      },
+    },
+  })
+
+  // Admin siparişi
+  await prisma.order.create({
+    data: {
+      userId: admin.id,
+      subtotal: 299.90,
+      shipping: 0,
+      total: 299.90,
+      status: 'DELIVERED',
+      paymentMethod: 'credit_card',
+      createdAt: new Date('2026-03-10'),
+      items: {
+        create: [
+          { productId: hobbySet.id, quantity: 1, price: 299.90 },
+        ],
+      },
+    },
+  })
+
+  // ─── ROZETLER — KULLANICILARA ATAMA ─────────────────────────────────
+  const allBadges = await prisma.badge.findMany()
+  const badgeMap = Object.fromEntries(allBadges.map(b => [b.slug, b.id]))
+
+  // demoUser rozetleri
+  await prisma.userBadge.createMany({
+    skipDuplicates: true,
+    data: [
+      { userId: demoUser.id, badgeId: badgeMap['ilk-tohum'],      earnedAt: new Date('2026-04-05') },
+      { userId: demoUser.id, badgeId: badgeMap['topluluk-yildizi'], earnedAt: new Date('2026-04-20') },
+      { userId: demoUser.id, badgeId: badgeMap['fotograf'],         earnedAt: new Date('2026-06-10') },
+    ],
+  })
+
+  // admin rozetleri
+  await prisma.userBadge.createMany({
+    skipDuplicates: true,
+    data: [
+      { userId: admin.id, badgeId: badgeMap['ilk-tohum'],      earnedAt: new Date('2025-03-01') },
+      { userId: admin.id, badgeId: badgeMap['ilk-hasat'],      earnedAt: new Date('2025-07-15') },
+      { userId: admin.id, badgeId: badgeMap['organik-uretici'], earnedAt: new Date('2025-08-01') },
+      { userId: admin.id, badgeId: badgeMap['bes-bitki'],       earnedAt: new Date('2025-09-01') },
+      { userId: admin.id, badgeId: badgeMap['usta-bahcivan'],   earnedAt: new Date('2026-01-01') },
+      { userId: admin.id, badgeId: badgeMap['mevsim-ustasi'],   earnedAt: new Date('2026-02-01') },
+    ],
+  })
+
+  // ─── AKTİVİTE LOGLARI ───────────────────────────────────────────────
+  await prisma.activityLog.createMany({
+    data: [
+      // demoUser aktiviteleri
+      { userId: demoUser.id, type: ActivityType.PURCHASE,      xpEarned: 50,  createdAt: new Date('2026-04-05'), metadata: { orderId: order1.id } },
+      { userId: demoUser.id, type: ActivityType.PLANT,         xpEarned: 30,  createdAt: new Date('2026-04-10'), metadata: { seedName: 'Cherry Domates' } },
+      { userId: demoUser.id, type: ActivityType.BADGE_EARN,    xpEarned: 50,  createdAt: new Date('2026-04-05'), metadata: { badge: 'İlk Tohum' } },
+      { userId: demoUser.id, type: ActivityType.PLANT,         xpEarned: 30,  createdAt: new Date('2026-05-01'), metadata: { seedName: 'İtalyan Fesleğeni' } },
+      { userId: demoUser.id, type: ActivityType.BADGE_EARN,    xpEarned: 30,  createdAt: new Date('2026-04-20'), metadata: { badge: 'Topluluk Yıldızı' } },
+      { userId: demoUser.id, type: ActivityType.PROJECT_SHARE, xpEarned: 30,  createdAt: new Date('2026-04-20'), metadata: { projectTitle: 'Balkonumda 3 Çeşit Domates' } },
+      { userId: demoUser.id, type: ActivityType.LOG_ENTRY,     xpEarned: 10,  createdAt: new Date('2026-06-05'), metadata: { note: 'İlk hasat' } },
+      { userId: demoUser.id, type: ActivityType.HARVEST,       xpEarned: 100, createdAt: new Date('2026-06-05'), metadata: { seedName: 'İtalyan Fesleğeni' } },
+      { userId: demoUser.id, type: ActivityType.BADGE_EARN,    xpEarned: 25,  createdAt: new Date('2026-06-10'), metadata: { badge: 'Bahçe Fotoğrafçısı' } },
+      { userId: demoUser.id, type: ActivityType.PURCHASE,      xpEarned: 50,  createdAt: new Date('2026-06-10'), metadata: { orderId: order2.id } },
+      // admin aktiviteleri
+      { userId: admin.id, type: ActivityType.PLANT,      xpEarned: 30,  createdAt: new Date('2026-03-01'), metadata: { seedName: 'Fransız Lavantası' } },
+      { userId: admin.id, type: ActivityType.HARVEST,    xpEarned: 100, createdAt: new Date('2026-06-01'), metadata: { seedName: 'Dolmalık Biber', amount: '2.5kg' } },
+      { userId: admin.id, type: ActivityType.LOG_ENTRY,  xpEarned: 10,  createdAt: new Date('2026-06-10'), metadata: { note: 'Lavanta ilk çiçek hasadı' } },
+      { userId: admin.id, type: ActivityType.BADGE_EARN, xpEarned: 200, createdAt: new Date('2026-01-01'), metadata: { badge: 'Usta Bahçıvan' } },
+    ],
+  })
+
+  // XP güncelle
+  await prisma.user.update({ where: { id: demoUser.id }, data: { xp: 320 + 50 + 30 + 50 + 30 + 30 + 30 + 10 + 100 + 25 + 50 } })
+  await prisma.user.update({ where: { id: admin.id },    data: { xp: 5000 } })
+
   // ─── DEMO PROJE ─────────────────────────────────────────────────────
   await prisma.project.createMany({
     skipDuplicates: false,
@@ -597,7 +812,7 @@ async function main() {
       {
         userId: demoUser.id,
         title: 'Balkonumda 3 Çeşit Domates',
-        description: 'Bu yaz 3 farklı domates çeşidi denedim. Cherry, salkım ve büyük domates yan yana harika görünüyor!',
+        description: 'Bu yaz 3 farklı domates çeşidi denedim. Cherry, salkım ve büyük domates yan yana harika görünüyor! Tüm balkonu kapladı ama değdi.',
         images: ['https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500'],
         tags: ['domates', 'balkon', 'yaz'],
         seedIds: [domates.id],
@@ -605,25 +820,27 @@ async function main() {
         viewCount: 280,
         published: true,
       },
+      {
+        userId: admin.id,
+        title: 'İzmir\'de Lavanta Bahçesi',
+        description: 'İzmir\'deki bahçemde 30m² lavanta tarlası kurdum. Arılar harika, komşular kokudan şikayetçi değil 😄 Her yıl kurutup satıyorum.',
+        images: ['https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=500'],
+        tags: ['lavanta', 'İzmir', 'organik'],
+        seedIds: [lavanta.id],
+        likes: 128,
+        viewCount: 1540,
+        published: true,
+      },
     ],
-  })
-
-  // ─── AKTİVİTE LOGU ──────────────────────────────────────────────────
-  await prisma.activityLog.create({
-    data: {
-      userId: demoUser.id,
-      type: ActivityType.PROJECT_SHARE,
-      xpEarned: 30,
-      metadata: { projectTitle: 'Balkonumda 3 Çeşit Domates' },
-    },
   })
 
   console.log('✅ Demo veriler başarıyla yüklendi!')
   console.log(`   👑 Admin: admin@filiz.com.tr / Admin123!`)
   console.log(`   👤 Demo:  demo@filiz.com.tr / User1234!`)
-  console.log(`   🌱 5 Tohum: Cherry Domates, Salatalık, Fesleğen, Dolmalık Biber, Lavanta`)
-  console.log(`   📦 4 Ürün: Toprak, Gübre, Saksı, Hobi Seti`)
-  console.log(`   📰 3 Makale | 8 Rozet | 1 Proje`)
+  console.log(`   🌱 5 Tohum | 📦 4 Ürün | 📰 3 Makale | 🏅 8 Rozet`)
+  console.log(`   🪴 Bahçe: demo=3 bitki, admin=2 bitki`)
+  console.log(`   🛒 Siparişler: demo=2, admin=1`)
+  console.log(`   🏆 Rozetler: demo=3, admin=6`)
 }
 
 main()

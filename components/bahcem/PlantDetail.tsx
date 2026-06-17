@@ -3,7 +3,6 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, Sprout, Droplets, Scissors, FlaskConical,
   Camera, PenLine, CheckCircle2, Clock, ChevronDown,
@@ -160,11 +159,9 @@ export function PlantDetail({ plant, userId }: Props) {
               <span className="text-primary-300">%{progressPct}</span>
             </div>
             <div className="h-2 bg-primary-600 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-300 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPct}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
+              <div
+                className="h-full bg-gradient-to-r from-amber-400 to-amber-300 rounded-full transition-all duration-700"
+                style={{ width: `${progressPct}%` }}
               />
             </div>
             <div className="flex justify-between text-xs text-primary-300 mt-1">
@@ -199,10 +196,10 @@ export function PlantDetail({ plant, userId }: Props) {
           ))}
         </div>
 
-        <AnimatePresence mode="wait">
+        <div>
           {/* Genel Bakış */}
           {tab === 'overview' && (
-            <motion.div key="overview" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div key="overview">
               {/* Büyüme Aşamaları */}
               <div className="bg-white rounded-2xl border border-primary-100 shadow-filiz p-5 mb-4">
                 <h2 className="font-display font-bold text-text-primary mb-4">Büyüme Aşamaları</h2>
@@ -252,12 +249,12 @@ export function PlantDetail({ plant, userId }: Props) {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Günlük */}
           {tab === 'log' && (
-            <motion.div key="log" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div key="log">
               {/* Yeni giriş */}
               <div className="bg-white rounded-2xl border border-primary-100 shadow-filiz p-5 mb-4">
                 <h2 className="font-display font-bold text-text-primary mb-3">Yeni Kayıt</h2>
@@ -320,12 +317,12 @@ export function PlantDetail({ plant, userId }: Props) {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Görevler */}
           {tab === 'tasks' && (
-            <motion.div key="tasks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div key="tasks">
               <div className="bg-white rounded-2xl border border-primary-100 shadow-filiz p-5">
                 <h2 className="font-display font-bold text-text-primary mb-4">Aylık Görev Takvimi</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -364,12 +361,12 @@ export function PlantDetail({ plant, userId }: Props) {
                   })}
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Hatırlatıcılar */}
           {tab === 'notifications' && (
-            <motion.div key="notifications" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div key="notifications">
               <div className="bg-white rounded-2xl border border-primary-100 shadow-filiz p-5">
                 <h2 className="font-display font-bold text-text-primary mb-4">Bekleyen Hatırlatıcılar</h2>
                 {plant.notifications.length === 0 ? (
@@ -400,9 +397,9 @@ export function PlantDetail({ plant, userId }: Props) {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </div>
     </div>
   )
@@ -445,14 +442,8 @@ function StageAccordion({
         <ChevronDown className={cn('w-4 h-4 text-text-secondary transition-transform', open && 'rotate-180')} />
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
+      {open && (
+        <div className="overflow-hidden">
             <div className="px-3 pb-3 space-y-2">
               <p className="text-xs text-text-secondary">{stage.description}</p>
               {stage.tips.length > 0 && (
@@ -482,9 +473,8 @@ function StageAccordion({
                 </div>
               )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   )
 }
