@@ -5,7 +5,10 @@ import { SeedCard } from '@/components/seed/SeedCard'
 type Seed = {
   id: string; slug: string; name: string; scientificName: string | null;
   price: number; images: string[]; category: string;
-  difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'; waterNeeds: string; sunlight: string; featured: boolean;
+  difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  waterNeeds: 'LOW' | 'MEDIUM' | 'HIGH';
+  sunlight: 'FULL_SUN' | 'PARTIAL_SUN' | 'SHADE';
+  featured: boolean;
 }
 
 export function FeaturedSeeds({ seeds }: { seeds: Seed[] }) {
