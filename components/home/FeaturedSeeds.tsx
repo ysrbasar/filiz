@@ -1,24 +1,14 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { prisma } from '@/lib/prisma'
 import { SeedCard } from '@/components/seed/SeedCard'
 
-async function getFeaturedSeeds() {
-  return prisma.seed.findMany({
-    where: { featured: true, publishedAt: { not: null } },
-    take: 6,
-    orderBy: { createdAt: 'desc' },
-    select: {
-      id: true, slug: true, name: true, scientificName: true,
-      price: true, images: true, category: true,
-      difficulty: true, waterNeeds: true, sunlight: true, featured: true,
-    },
-  })
+type Seed = {
+  id: string; slug: string; name: string; scientificName: string | null;
+  price: number; images: string[]; category: string;
+  difficulty: string; waterNeeds: string; sunlight: string; featured: boolean;
 }
 
-export async function FeaturedSeeds() {
-  const seeds = await getFeaturedSeeds()
-
+export function FeaturedSeeds({ seeds }: { seeds: Seed[] }) {
   if (seeds.length === 0) return null
 
   return (

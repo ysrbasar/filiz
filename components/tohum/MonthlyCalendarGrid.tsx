@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
 
 const MONTHS = [
@@ -39,11 +38,8 @@ export function MonthlyCalendarGrid({ plantingMonths, harvestMonths, city, notes
           const isBoth = isPlanting && isHarvest
 
           return (
-            <motion.div
+            <div
               key={month}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.04 }}
               title={`${m.full}${isPlanting ? ' · Ekim' : ''}${isHarvest ? ' · Hasat' : ''}`}
               className={cn(
                 'relative rounded-xl p-3 text-center border-2 transition-all cursor-default',
@@ -70,7 +66,7 @@ export function MonthlyCalendarGrid({ plantingMonths, harvestMonths, city, notes
                 {isHarvest && <span className="text-xs leading-none">🌾</span>}
                 {!isPlanting && !isHarvest && <span className="text-xs text-gray-300 leading-none">—</span>}
               </div>
-            </motion.div>
+            </div>
           )
         })}
       </div>

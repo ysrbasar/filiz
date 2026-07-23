@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShoppingCart, Package } from 'lucide-react'
-import { motion } from 'framer-motion'
 import { useCartStore } from '@/store/cartStore'
 import { Button } from '@/components/ui/button'
 
@@ -28,11 +27,7 @@ export function ProductCard({ product, index = 0 }: Props) {
   const addItem = useCartStore((s) => s.addItem)
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
-      whileHover={{ y: -4 }}
+    <article
       className="group bg-white rounded-3xl overflow-hidden shadow-filiz hover:shadow-filiz-hover transition-all border border-primary-100"
     >
       <Link href={`/magaza/${product.slug}`} className="block">
@@ -90,6 +85,6 @@ export function ProductCard({ product, index = 0 }: Props) {
           </Button>
         </div>
       </div>
-    </motion.article>
+    </article>
   )
 }

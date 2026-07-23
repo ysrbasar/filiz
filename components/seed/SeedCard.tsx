@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShoppingCart, Droplets, Sun, Star } from 'lucide-react'
-import { motion } from 'framer-motion'
 import { useCartStore } from '@/store/cartStore'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
@@ -36,9 +35,7 @@ export function SeedCard({ id, slug, name, scientificName, price, image, difficu
   const diff = DIFFICULTY_LABELS[difficulty]
 
   return (
-    <motion.article
-      whileHover={{ y: -4, scale: 1.01 }}
-      transition={{ duration: 0.2 }}
+    <article
       className="group bg-white rounded-3xl overflow-hidden shadow-filiz hover:shadow-filiz-hover transition-all border border-primary-100"
     >
       {/* Görsel */}
@@ -101,6 +98,6 @@ export function SeedCard({ id, slug, name, scientificName, price, image, difficu
           </Button>
         </div>
       </div>
-    </motion.article>
+    </article>
   )
 }

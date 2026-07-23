@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
-
+import { useState, useRef, useEffect } from 'react'
 import {
   Sprout, Leaf, Sun, Scissors, Flower2, Apple,
   ChevronDown, CheckCircle2, Lightbulb, AlertTriangle, Clock,
@@ -48,6 +47,21 @@ interface Props {
   activeStageOrder?: number
 }
 
+function useIntersecting(ref: React.RefObject<HTMLDivElement | null>) {
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect() } },
+      { rootMargin: '-60px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [ref])
+  return inView
+}
+
 function StageCard({ stage, index, total, isOpen, onToggle, dayStart }: {
   stage: Stage
   index: number
@@ -57,7 +71,7 @@ function StageCard({ stage, index, total, isOpen, onToggle, dayStart }: {
   dayStart: number
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const inView = useIntersecting(ref)
   const color = STAGE_COLORS[stage.animationType] ?? fallbackColor
   const Icon = STAGE_ICONS[stage.animationType] ?? Leaf
   const isLast = index === total - 1
@@ -66,39 +80,38 @@ function StageCard({ stage, index, total, isOpen, onToggle, dayStart }: {
     <div ref={ref} className="relative flex gap-4">
       {/* Dikey zaman çizgisi */}
       <div className="flex flex-col items-center shrink-0 w-10">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={inView ? { scale: 1 } : { scale: 0 }}
-          transition={{ delay: index * 0.07, type: 'spring', stiffness: 300, damping: 20 }}
+        <div
           className={cn(
             'w-10 h-10 rounded-2xl flex items-center justify-center ring-2 shrink-0 z-10 cursor-pointer transition-all duration-300',
             color.bg, color.ring,
-            isOpen && 'scale-110 shadow-md'
+            isOpen && 'scale-110 shadow-md',
+            inView ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
           )}
+          style={{ transition: `transform 0.3s ${index * 0.07}s, opacity 0.3s ${index * 0.07}s` }}
           onClick={onToggle}
         >
           <Icon className={cn('w-5 h-5', color.text)} />
-        </motion.div>
+        </div>
         {!isLast && (
-          <motion.div
-            initial={{ scaleY: 0 }}
-            animate={inView ? { scaleY: 1 } : { scaleY: 0 }}
-            transition={{ delay: index * 0.07 + 0.15, duration: 0.4 }}
-            style={{ originY: 0 }}
+          <div
             className={cn('w-0.5 flex-1 min-h-[24px] bg-gradient-to-b to-transparent mt-1', color.line)}
+            style={{
+              transform: inView ? 'scaleY(1)' : 'scaleY(0)',
+              transformOrigin: 'top',
+              transition: `transform 0.4s ${index * 0.07 + 0.15}s`,
+            }}
           />
         )}
       </div>
 
       {/* Kart */}
-      <motion.div
-        initial={{ opacity: 0, x: 24 }}
-        animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 24 }}
-        transition={{ delay: index * 0.07 + 0.05, duration: 0.4, ease: 'easeOut' }}
+      <div
         className={cn(
           'flex-1 mb-4 rounded-2xl border overflow-hidden transition-all duration-200',
-          isOpen ? 'border-primary-300 shadow-filiz' : 'border-gray-100 bg-white hover:border-primary-200 hover:shadow-sm'
+          isOpen ? 'border-primary-300 shadow-filiz' : 'border-gray-100 bg-white hover:border-primary-200 hover:shadow-sm',
+          inView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-6'
         )}
+        style={{ transition: `opacity 0.4s ${index * 0.07 + 0.05}s, transform 0.4s ${index * 0.07 + 0.05}s` }}
       >
         {/* Başlık satırı */}
         <button
@@ -120,98 +133,69 @@ function StageCard({ stage, index, total, isOpen, onToggle, dayStart }: {
             <span className="text-xs font-semibold bg-gray-50 text-text-secondary border border-gray-100 px-3 py-1 rounded-full hidden sm:block">
               {stage.durationDays} gün
             </span>
-            <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-              <ChevronDown className="w-4 h-4 text-text-secondary" />
-            </motion.div>
+            <ChevronDown className={cn('w-4 h-4 text-text-secondary transition-transform duration-200', isOpen && 'rotate-180')} />
           </div>
         </button>
 
         {/* Genişletilmiş içerik */}
-        <AnimatePresence initial={false}>
-          {isOpen && (
-            <motion.div
-              key="content"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.28, ease: 'easeInOut' }}
-              className="overflow-hidden"
-            >
-              <div className="px-4 pb-5 pt-3 border-t border-gray-50">
-                <p className="text-sm text-text-secondary leading-relaxed mb-5">{stage.description}</p>
+        {isOpen && (
+          <div className="overflow-hidden">
+            <div className="px-4 pb-5 pt-3 border-t border-gray-50">
+              <p className="text-sm text-text-secondary leading-relaxed mb-5">{stage.description}</p>
 
-                <div className="grid sm:grid-cols-3 gap-4">
-                  {stage.tasks.length > 0 && (
-                    <div className="bg-primary-50 rounded-xl p-3">
-                      <p className="text-[10px] font-bold text-primary-600 mb-2.5 uppercase tracking-widest flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Görevler
-                      </p>
-                      <ul className="space-y-1.5">
-                        {stage.tasks.map((t, i) => (
-                          <motion.li
-                            key={i}
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.05 }}
-                            className="text-xs text-text-primary flex items-start gap-1.5"
-                          >
-                            <span className="text-primary-400 mt-0.5 shrink-0">•</span>
-                            {t}
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+              <div className="grid sm:grid-cols-3 gap-4">
+                {stage.tasks.length > 0 && (
+                  <div className="bg-primary-50 rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-primary-600 mb-2.5 uppercase tracking-widest flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Görevler
+                    </p>
+                    <ul className="space-y-1.5">
+                      {stage.tasks.map((t, i) => (
+                        <li key={i} className="text-xs text-text-primary flex items-start gap-1.5">
+                          <span className="text-primary-400 mt-0.5 shrink-0">•</span>
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-                  {stage.tips.length > 0 && (
-                    <div className="bg-amber-50 rounded-xl p-3">
-                      <p className="text-[10px] font-bold text-amber-600 mb-2.5 uppercase tracking-widest flex items-center gap-1.5">
-                        <Lightbulb className="w-3.5 h-3.5" /> İpuçları
-                      </p>
-                      <ul className="space-y-1.5">
-                        {stage.tips.map((t, i) => (
-                          <motion.li
-                            key={i}
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.05 }}
-                            className="text-xs text-text-primary flex items-start gap-1.5"
-                          >
-                            <span className="text-amber-400 mt-0.5 shrink-0">•</span>
-                            {t}
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                {stage.tips.length > 0 && (
+                  <div className="bg-amber-50 rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-amber-600 mb-2.5 uppercase tracking-widest flex items-center gap-1.5">
+                      <Lightbulb className="w-3.5 h-3.5" /> İpuçları
+                    </p>
+                    <ul className="space-y-1.5">
+                      {stage.tips.map((t, i) => (
+                        <li key={i} className="text-xs text-text-primary flex items-start gap-1.5">
+                          <span className="text-amber-400 mt-0.5 shrink-0">•</span>
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-                  {stage.warnings.length > 0 && (
-                    <div className="bg-red-50 rounded-xl p-3">
-                      <p className="text-[10px] font-bold text-red-500 mb-2.5 uppercase tracking-widest flex items-center gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5" /> Dikkat
-                      </p>
-                      <ul className="space-y-1.5">
-                        {stage.warnings.map((w, i) => (
-                          <motion.li
-                            key={i}
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.05 }}
-                            className="text-xs text-text-primary flex items-start gap-1.5"
-                          >
-                            <span className="text-red-400 mt-0.5 shrink-0">•</span>
-                            {w}
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                {stage.warnings.length > 0 && (
+                  <div className="bg-red-50 rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-red-500 mb-2.5 uppercase tracking-widest flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5" /> Dikkat
+                    </p>
+                    <ul className="space-y-1.5">
+                      {stage.warnings.map((w, i) => (
+                        <li key={i} className="text-xs text-text-primary flex items-start gap-1.5">
+                          <span className="text-red-400 mt-0.5 shrink-0">•</span>
+                          {w}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -234,18 +218,15 @@ export function GrowthTimeline({ stages, activeStageOrder }: Props) {
             const isPast = activeStageOrder !== undefined && i < activeStageOrder
             const isCurrent = activeStageOrder !== undefined && i === activeStageOrder
             return (
-              <motion.button
+              <button
                 key={stage.id}
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: i * 0.06, duration: 0.4 }}
-                style={{ flex: stage.durationDays, originX: 0 }}
+                style={{ flex: stage.durationDays }}
                 onClick={() => toggle(stage.id)}
                 title={stage.title}
                 className={cn(
                   'transition-all',
                   isPast ? 'opacity-100' : isCurrent ? 'opacity-100 animate-pulse' : 'opacity-40',
-                  color.bg.replace('bg-', 'bg-').replace('-100', '-300'),
+                  color.bg.replace('-100', '-300'),
                   expanded === stage.id && 'opacity-100'
                 )}
               />
@@ -258,7 +239,7 @@ export function GrowthTimeline({ stages, activeStageOrder }: Props) {
         </div>
       </div>
 
-      {/* Aşamalar — dikey zaman çizelgesi */}
+      {/* Aşamalar */}
       <div>
         {stages.map((stage, index) => {
           const dayStart = stages.slice(0, index).reduce((s, st) => s + st.durationDays, 0)

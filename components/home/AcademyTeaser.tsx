@@ -1,14 +1,9 @@
 import Link from 'next/link'
 import { ArrowRight, Clock, BookOpen } from 'lucide-react'
-import { prisma } from '@/lib/prisma'
 
-async function getLatestArticles() {
-  return prisma.article.findMany({
-    where: { published: true },
-    take: 3,
-    orderBy: { publishedAt: 'desc' },
-    select: { id: true, slug: true, title: true, excerpt: true, coverImage: true, readingTime: true, category: true, publishedAt: true },
-  })
+type Article = {
+  id: string; slug: string; title: string; excerpt: string | null;
+  coverImage: string | null; readingTime: number | null; category: string; publishedAt: Date | null;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -17,8 +12,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   COMPOST: 'Kompost', GREENHOUSE: 'Sera', BEGINNER: 'Başlangıç',
 }
 
-export async function AcademyTeaser() {
-  const articles = await getLatestArticles()
+export function AcademyTeaser({ articles }: { articles: Article[] }) {
   if (articles.length === 0) return null
 
   return (

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { Sprout, Star, ArrowRight, CheckCircle, Loader2, MapPin } from 'lucide-react'
 import { GrowthTimeline } from '@/components/tohum/GrowthTimeline'
 import { MonthlyCalendarGrid } from '@/components/tohum/MonthlyCalendarGrid'
@@ -46,7 +45,7 @@ export function QRLanding({ seed, userId, plantedSeed }: Props) {
       {/* Hero */}
       <div className="bg-gradient-to-br from-primary-600 via-primary-500 to-primary-400 text-white">
         <div className="max-w-3xl mx-auto px-4 py-12 text-center">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.6 }}>
+          <div>
             <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden bg-white/20 mb-6 ring-4 ring-white/30">
               {seed.images[0] ? (
                 <Image src={seed.images[0]} alt={seed.name} width={96} height={96} className="object-cover w-full h-full" />
@@ -56,8 +55,8 @@ export function QRLanding({ seed, userId, plantedSeed }: Props) {
                 </div>
               )}
             </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          </div>
+          <div>
             <p className="text-primary-200 text-sm font-medium mb-2">QR Tohum Rehberi</p>
             <h1 className="font-display text-3xl sm:text-4xl font-bold mb-3">{seed.name}</h1>
             {seed.scientificName && (
@@ -66,7 +65,7 @@ export function QRLanding({ seed, userId, plantedSeed }: Props) {
             <p className="text-primary-100 text-base leading-relaxed max-w-xl mx-auto">
               {seed.description}
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
 

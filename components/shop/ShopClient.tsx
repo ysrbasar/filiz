@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
 import { SlidersHorizontal, X } from 'lucide-react'
 import { SeedCard } from '@/components/seed/SeedCard'
 import { ProductCard } from '@/components/shop/ProductCard'
@@ -129,10 +128,7 @@ export function ShopClient({ products, seeds }: Props) {
 
         {/* Filtreler */}
         {showFilters && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+          <div
             className="bg-white border border-primary-100 rounded-2xl p-6 mb-6 grid sm:grid-cols-2 gap-6"
           >
             {(tab === 'all' || tab === 'seeds') && (
@@ -170,7 +166,7 @@ export function ShopClient({ products, seeds }: Props) {
                 className="w-full accent-primary-500"
               />
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Ürün grid'i */}
