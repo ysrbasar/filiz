@@ -1,13 +1,14 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import type { Difficulty, WaterNeeds, SunlightNeeds } from '@prisma/client'
 import { SeedCard } from '@/components/seed/SeedCard'
 
 type Seed = {
   id: string; slug: string; name: string; scientificName: string | null;
   price: number; images: string[]; category: string;
-  difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
-  waterNeeds: 'LOW' | 'MEDIUM' | 'HIGH';
-  sunlight: 'FULL_SUN' | 'PARTIAL_SUN' | 'SHADE';
+  difficulty: Difficulty;
+  waterNeeds: WaterNeeds;
+  sunlight: SunlightNeeds;
   featured: boolean;
 }
 
