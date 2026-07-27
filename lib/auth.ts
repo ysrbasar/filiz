@@ -1,5 +1,4 @@
 import NextAuth from 'next-auth'
-import { PrismaAdapter } from '@auth/prisma-adapter'
 import Google from 'next-auth/providers/google'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
@@ -12,7 +11,6 @@ const credentialsSchema = z.object({
 })
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/giris',
@@ -20,8 +18,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
     }),
     Credentials({
       name: 'credentials',
@@ -56,17 +54,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // Google ile giriş: kullanıcıyı DB'ye kaydet/güncelle
+      if (account?.provider === 'google' && user.email) {
+        await prisma.user.upsert({
+          where: { email: user.email },
+          update: { name: user.name ?? undefined, avatar: user.image ?? undefined },
+          create: { email: user.email, name: user.name ?? '', avatar: user.image ?? null },
+        })
+      }
+      return true
+    },
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id
         token.role = (user as { role?: string }).role
         token.xp = (user as { xp?: number }).xp
         token.city = (user as { city?: string }).city
+      }
+      // Google girişinde DB'den rol bilgisini çek
+      if (!token.role && token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          select: { id: true, role: true, xp: true, city: true },
+        })
+        if (dbUser) {
+          token.id = dbUser.id
+          token.role = dbUser.role
+          token.xp = dbUser.xp
+          token.city = dbUser.city ?? undefined
+        }
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub!
+        session.user.id = (token.id ?? token.sub) as string
         ;(session.user as { role?: string }).role = token.role as string
         ;(session.user as { xp?: number }).xp = token.xp as number
         ;(session.user as { city?: string }).city = token.city as string

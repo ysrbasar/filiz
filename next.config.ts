@@ -12,7 +12,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com",
+      "img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://*.unsplash.com https://lh3.googleusercontent.com",
       "font-src 'self' https://fonts.gstatic.com",
       "connect-src 'self' https://api.openai.com https://generativelanguage.googleapis.com",
       "frame-ancestors 'none'",
